@@ -3,10 +3,12 @@ using Store.Data;
 using Store.Models;
 using System.Collections.Generic;
 using System.Collections;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace Store.Controllers
 {
-
+    [Authorize(Roles = WC.AdminRole)]
     public class ApplicationTypeController : Controller
     {
         private readonly ApplicationDbContext _db;
