@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Store.Data;
-using Store.Models;
+using Store_Models;
 using System.Collections.Generic;
 using System.Collections;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
+using Store_Utility;
+using Store_DataAccess;
 
 namespace Store.Controllers
 {

@@ -2,10 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Store.Data;
-using Store.Models;
-using Store.Models.ViewModels;
-using Store.Utility;
+using Store_DataAccess;
+using Store_Models;
+using Store_Models.ViewModels;
+using Store_Utility;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

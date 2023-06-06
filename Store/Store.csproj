@@ -23,4 +23,10 @@
     <Folder Include="wwwroot\images\product\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Store_DataAccess\Store_DataAccess.csproj" />
+    <ProjectReference Include="..\Store_Models\Store_Models.csproj" />
+    <ProjectReference Include="..\Store_Utility\Store_Utility.csproj" />
+  </ItemGroup>
+
 </Project>

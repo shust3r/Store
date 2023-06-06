@@ -13,7 +13,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using Store.Models;
+using Store_Models;
+using Store_Utility;
 
 namespace Store.Areas.Identity.Pages.Account
 {
