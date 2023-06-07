@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Store_DataAccess;
+using Store_DataAccess.Repository;
+using Store_DataAccess.Repository.IRepository;
 using Store_Utility;
 using System;
 using System.Collections.Generic;
@@ -44,6 +46,9 @@ namespace Store
                 Options.Cookie.HttpOnly = true;
                 Options.Cookie.IsEssential = true;
             });
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IApplicationTypeRepository, ApplicationTypeRepository>();
+
             services.AddControllersWithViews();
         }
 
