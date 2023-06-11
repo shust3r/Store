@@ -103,6 +103,7 @@ namespace Store.Controllers
                     productVM.Product.Image = fileName + extension;
 
                     _prodRepo.Add(productVM.Product);
+                    TempData[WC.Success] = "Product was created successfully";
                 }
                 else
                 {
@@ -134,6 +135,7 @@ namespace Store.Controllers
                         productVM.Product.Image = objFromDb.Image;
                     }
                     _prodRepo.Update(productVM.Product);
+                    TempData[WC.Success] = "Product was updated successfully";
                 }
 
                 _prodRepo.Save();
@@ -169,6 +171,7 @@ namespace Store.Controllers
             var obj = _prodRepo.Find(id.GetValueOrDefault());
             if (obj == null)
             {
+                TempData[WC.Error] = "Product with such ID wasn't found...";
                 return NotFound();
             }
 
@@ -182,6 +185,7 @@ namespace Store.Controllers
 
             _prodRepo.Remove(obj);
             _prodRepo.Save();
+            TempData[WC.Success] = "Product was deleted successfully";
             return RedirectToAction("Index");
         }
     }

@@ -173,6 +173,7 @@ namespace Store.Controllers
             }
 
             shoppingCartList.Remove(shoppingCartList.FirstOrDefault(u => u.ProductId == id));
+            TempData[WC.Success] = "Product was deleted from cart successfully";
             HttpContext.Session.Set(WC.SessionCart, shoppingCartList);
             return RedirectToAction(nameof(Index));
         }

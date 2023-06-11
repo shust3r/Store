@@ -41,8 +41,10 @@ namespace Store.Controllers
             {
                 _catRepo.Add(obj);
                 _catRepo.Save();
+                TempData[WC.Success] = "Category created successfully";
                 return RedirectToAction("Index");
             }
+            TempData[WC.Error] = "Error while creating category...";
             return View(obj);
         }
 
@@ -71,8 +73,10 @@ namespace Store.Controllers
             {
                 _catRepo.Update(obj);
                 _catRepo.Save();
+                TempData[WC.Success] = "Category was edited successfully";
                 return RedirectToAction("Index");
             }
+            TempData[WC.Error] = "Error while editing category...";
             return View(obj);
         }
 
@@ -100,10 +104,12 @@ namespace Store.Controllers
             var obj = _catRepo.Find(id.GetValueOrDefault());
             if (obj == null)
             {
+                TempData[WC.Error] = "This category wasn't found...";
                 return NotFound();
             }
             _catRepo.Remove(obj);
             _catRepo.Save();
+            TempData[WC.Success] = "Category was deleted successfully";
             return RedirectToAction("Index");
         }
     }

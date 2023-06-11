@@ -41,8 +41,10 @@ namespace Store.Controllers
             {
                 _appTypeRepo.Add(obj);
                 _appTypeRepo.Save();
+                TempData[WC.Success] = "Application Type was created successfully";
                 return RedirectToAction("Index");
             }
+            TempData[WC.Error] = "Error while creating Application Type...";
             return View(obj);
         }
 
@@ -71,8 +73,10 @@ namespace Store.Controllers
             {
                 _appTypeRepo.Update(obj);
                 _appTypeRepo.Save();
+                TempData[WC.Success] = "Application Type was edited successfully";
                 return RedirectToAction("Index");
             }
+            TempData[WC.Error] = "Error while editing Application Type...";
             return View(obj);
         }
 
@@ -100,10 +104,12 @@ namespace Store.Controllers
             var obj = _appTypeRepo.Find(id.GetValueOrDefault());
             if (obj == null)
             {
+                TempData[WC.Error] = "This Application Type wasn't found...";
                 return NotFound();
             }
             _appTypeRepo.Remove(obj);
             _appTypeRepo.Save();
+            TempData[WC.Success] = "Application Type was deleted successfully";
             return RedirectToAction("Index");
         }
     }
