@@ -1,6 +1,5 @@
 ﻿@model Store_Models.ViewModels.DetailsVM
 @using Store_Utility
-
 <div class="">
     <form method="post">
         <input asp-for="@Model.Product.Id" hidden />
@@ -30,7 +29,23 @@
 
                                         <p class="text-secondary">@Html.Raw(Model.Product.Description)</p>
                                     </div>
-
+                                    @if (User.IsInRole(WC.AdminRole))
+                                    {
+                                        <div class="col-12">
+                                            Pieces:
+                                        </div>
+                                        <div class="col-12">
+                                            @if (Model.ExistsInCart)
+                                            {
+                                                <input asp-asp-for="@Model.Product.TempAmount" disabled class="form-control" />
+                                            }
+                                            else
+                                            {
+                                                <input asp-asp-for="@Model.Product.TempAmount" class="form-control" />
+                                            }
+                                            <span asp-validation-for="@Model.Product.TempAmount" class="text-danger"></span>
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         </div>
