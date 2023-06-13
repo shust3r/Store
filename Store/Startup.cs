@@ -11,6 +11,7 @@ using Store_DataAccess;
 using Store_DataAccess.Repository;
 using Store_DataAccess.Repository.IRepository;
 using Store_Utility;
+using Store_Utility.BrainTree;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,6 +47,8 @@ namespace Store
                 Options.Cookie.HttpOnly = true;
                 Options.Cookie.IsEssential = true;
             });
+            services.Configure<BrainTreeSettings>(Configuration.GetSection("BrainTree"));//GetSection take info from appsettings.json
+            services.AddSingleton<IBrainTreeGate, BrainTreeGate>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IApplicationTypeRepository, ApplicationTypeRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();

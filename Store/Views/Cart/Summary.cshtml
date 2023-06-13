@@ -1,6 +1,6 @@
 ﻿@model Store_Models.ViewModels.ProductUserVM
 
-<form method="post">
+<form method="post" id="payment-form">
     <br />
     <div class="backgroundWhiteBorder">
         <div class="container">
@@ -137,6 +137,15 @@
                                         }
                                     </ul>
                                 </div>
+                                @if (User.IsInRole(Store_Utility.WC.AdminRole))
+                                {
+                                    <div class="col-12">
+                                        <div class="container">
+                                            <div id="dropin-container"></div>
+                                            <input id="nonce" name="payment_method_nonce" type="hidden" />
+                                        </div>
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>
@@ -163,4 +172,26 @@
 
 @section Scripts{
     <partial name="_ValidationScriptsPartial" />
+    <script src="https://js.braintreegateway.com/web/dropin/1.37.0/js/dropin.min.js"></script>
+
+    <script>
+        var form = document.querySelector('#payment-form');
+        var client_token = "@ViewBag.ClientToken";
+
+        braintree.dropin.create({
+            authorization: client_token,
+            container: '#dropin-container'
+        }, function (createErr, instance) {
+            form.addEventListener('submit', function () {
+                event.preventDefault();
+
+                //Add the nonce to the form and submit
+                instance.requestPaymentMethod(function (err, payload) {
+                    // Submit payload.nonce to your server
+                    document.querySelector('#nonce').value = payload.nonce;
+                    form.submit();
+                });
+            });
+        });
+    </script>
 }

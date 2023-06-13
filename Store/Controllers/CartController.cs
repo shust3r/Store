@@ -8,6 +8,7 @@ using Store_DataAccess.Repository.IRepository;
 using Store_Models;
 using Store_Models.ViewModels;
 using Store_Utility;
+using Store_Utility.BrainTree;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -29,6 +30,7 @@ namespace Store.Controllers
         private readonly IInquiryDetailRepository _inqDRepo;
         private readonly IOrderHeaderRepository _orderHRepo;
         private readonly IOrderDetailRepository _orderDRepo;
+        private readonly IBrainTreeGate _brain;
 
         [BindProperty]
         public ProductUserVM ProductUserVM { get; set; }
@@ -36,7 +38,7 @@ namespace Store.Controllers
         public CartController(IWebHostEnvironment webHostEnvironment, IEmailSender emailSender,
             IApplicationUserRepository userRepo, IProductRepository prodRepo, 
             IInquiryHeaderRepository inqHRepo, IInquiryDetailRepository inqDRepo,
-            IOrderHeaderRepository orderHRepo, IOrderDetailRepository orderDRepo)
+            IOrderHeaderRepository orderHRepo, IOrderDetailRepository orderDRepo, IBrainTreeGate brain)
         {
             _webHostEnvironment = webHostEnvironment;
             _emailSender = emailSender;
@@ -46,6 +48,7 @@ namespace Store.Controllers
             _inqHRepo = inqHRepo;
             _orderHRepo = orderHRepo;
             _orderDRepo = orderDRepo;
+            _brain = brain;
         }
         public IActionResult Index()
         {
@@ -108,6 +111,11 @@ namespace Store.Controllers
                 {
                     applicationUser = new ApplicationUser();
                 }
+
+                var gateway = _brain.GetGateway();
+                var clientToken = gateway.ClientToken.Generate();
+                ViewBag.ClientToken = clientToken;
+
             }
             else
             {
@@ -259,10 +267,11 @@ namespace Store.Controllers
             return RedirectToAction(nameof(InquiryConfirmation));
         }
 
-        public IActionResult InquiryConfirmation()
+        public IActionResult InquiryConfirmation(int id = 0)
         {
+            OrderHeader orderHeader = _orderHRepo.FirstOrDefault(u => u.Id == id);
             HttpContext.Session.Clear();
-            return View();
+            return View(orderHeader);
         }
 
         public IActionResult Remove(int id)
