@@ -58,6 +58,13 @@ namespace Store
             services.AddScoped<IOrderHeaderRepository, OrderHeaderRepository>();
             services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
             services.AddScoped<IApplicationUserRepository, ApplicationUserRepository>();
+
+            services.AddAuthentication().AddFacebook(Options =>
+            {
+                Options.AppId = "1483035909129321";
+                Options.AppSecret = "d16e373dca46592e43cbe7fb2ee4ac81";
+            });
+
             services.AddControllersWithViews();
         }
 
