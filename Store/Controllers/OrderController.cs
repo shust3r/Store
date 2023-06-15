@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Store_DataAccess.Repository.IRepository;
 using Store_Models.ViewModels;
+using Store_Utility;
 using Store_Utility.BrainTree;
+using System.Linq;
 
 namespace Store.Controllers
 {
@@ -23,7 +25,16 @@ namespace Store.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            OrderListVM orderListVM = new OrderListVM()
+            {
+                OrderHList = _orderHRepo.GetAll(),
+                StatusList = WC.listStatus.ToList().Select(i => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+                {
+                    Text = i,
+                    Value = i
+                })
+            };
+            return View(orderListVM);
         }
     }
 }
