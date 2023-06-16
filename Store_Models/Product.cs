@@ -31,7 +31,7 @@ namespace Store_Models
         public virtual ApplicationType ApplicationType { get; set; }
 
         [NotMapped]
-        [Range(1,10000)]
+        [Range(1,10000, ErrorMessage = "Amount should be greater than 0.")]
         public int TempAmount { get; set; }
     }
 }
