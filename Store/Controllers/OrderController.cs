@@ -79,6 +79,7 @@ namespace Store.Controllers
             OrderHeader orderHeader = _orderHRepo.FirstOrDefault(u => u.Id == OrderVM.OrderHeader.Id);
             orderHeader.OrderStatus = WC.StatusInProcess;
             _orderHRepo.Save();
+            TempData[WC.Success] = "Order is In Process";
             return RedirectToAction(nameof(Index));
         }
 
@@ -89,6 +90,7 @@ namespace Store.Controllers
             orderHeader.OrderStatus = WC.StatusShipped;
             orderHeader.ShippingDate = DateTime.Now;
             _orderHRepo.Save();
+            TempData[WC.Success] = "Order Shipped Successfully";
             return RedirectToAction(nameof(Index));
         }
 
@@ -114,6 +116,24 @@ namespace Store.Controllers
             _orderHRepo.Save();
             TempData[WC.Success] = "Order Cancelled Successfully";
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public IActionResult UpdateOrderDetails()
+        {
+             OrderHeader orderHeaderFromDb = _orderHRepo.FirstOrDefault(u => u.Id == OrderVM.OrderHeader.Id);
+            orderHeaderFromDb.FullName = OrderVM.OrderHeader.FullName;
+            orderHeaderFromDb.PhoneNumber = OrderVM.OrderHeader.PhoneNumber;
+            orderHeaderFromDb.StreetAddress = OrderVM.OrderHeader.StreetAddress;
+            orderHeaderFromDb.City = OrderVM.OrderHeader.City;
+            orderHeaderFromDb.State = OrderVM.OrderHeader.State;
+            orderHeaderFromDb.PostalCode = OrderVM.OrderHeader.PostalCode;
+            orderHeaderFromDb.Email = OrderVM.OrderHeader.Email;
+
+            _orderHRepo.Save();
+            TempData[WC.Success] = "Order Details Updated Successfully";
+
+            return RedirectToAction("Details","Order",new { id=orderHeaderFromDb.Id});
         }
     }
 }
