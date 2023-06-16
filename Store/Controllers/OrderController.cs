@@ -23,7 +23,7 @@ namespace Store.Controllers
         }
 
 
-        public IActionResult Index()
+        public IActionResult Index(string searchName = null, string searchEmail = null, string searchPhone = null, string Status = null)
         {
             OrderListVM orderListVM = new OrderListVM()
             {
@@ -34,6 +34,24 @@ namespace Store.Controllers
                     Value = i
                 })
             };
+
+            if (!string.IsNullOrEmpty(searchName))
+            {
+                orderListVM.OrderHList = orderListVM.OrderHList.Where(u => u.FullName.ToLower().Contains(searchName.ToLower()));
+            }
+            if (!string.IsNullOrEmpty(searchEmail))
+            {
+                orderListVM.OrderHList = orderListVM.OrderHList.Where(u => u.Email.ToLower().Contains(searchEmail.ToLower()));
+            }
+            if (!string.IsNullOrEmpty(searchPhone))
+            {
+                orderListVM.OrderHList = orderListVM.OrderHList.Where(u => u.PhoneNumber.ToLower().Contains(searchPhone.ToLower()));
+            }
+            if (!string.IsNullOrEmpty(Status) && Status!= "--Order Status--")
+            {
+                orderListVM.OrderHList = orderListVM.OrderHList.Where(u => u.OrderStatus.ToLower().Contains(Status.ToLower()));
+            }
+
             return View(orderListVM);
         }
     }
