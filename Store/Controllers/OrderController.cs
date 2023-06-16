@@ -9,9 +9,11 @@ using System.Linq;
 using Store_Models;
 using System;
 using Braintree;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Store.Controllers
 {
+    [Authorize(Roles = WC.AdminRole)]
     public class OrderController : Controller
     {
         private readonly IOrderHeaderRepository _orderHRepo;
