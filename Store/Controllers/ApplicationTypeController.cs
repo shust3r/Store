@@ -7,6 +7,7 @@ using System.Data;
 using Store_Utility;
 using Store_DataAccess;
 using Store_DataAccess.Repository.IRepository;
+using Microsoft.Extensions.Localization;
 
 namespace Store.Controllers
 {
@@ -14,10 +15,12 @@ namespace Store.Controllers
     public class ApplicationTypeController : Controller
     {
         private readonly IApplicationTypeRepository _appTypeRepo;
+        private readonly IStringLocalizer<ApplicationTypeController> _localizer;
 
-        public ApplicationTypeController(IApplicationTypeRepository appTypeRepo)
+        public ApplicationTypeController(IApplicationTypeRepository appTypeRepo, IStringLocalizer<ApplicationTypeController> localizer)
         {
             _appTypeRepo = appTypeRepo;
+            _localizer = localizer;
         }
 
         public IActionResult Index()
@@ -41,10 +44,10 @@ namespace Store.Controllers
             {
                 _appTypeRepo.Add(obj);
                 _appTypeRepo.Save();
-                TempData[WC.Success] = "Application Type was created successfully";
+                TempData[WC.Success] = _localizer["SuccessCreateHTTPPost"].ToString();
                 return RedirectToAction("Index");
             }
-            TempData[WC.Error] = "Error while creating Application Type...";
+            TempData[WC.Error] = _localizer["ErrorCreateHTTPPost"].ToString();
             return View(obj);
         }
 
@@ -73,10 +76,10 @@ namespace Store.Controllers
             {
                 _appTypeRepo.Update(obj);
                 _appTypeRepo.Save();
-                TempData[WC.Success] = "Application Type was edited successfully";
+                TempData[WC.Success] = _localizer["SuccessEditHTTPPost"].ToString();
                 return RedirectToAction("Index");
             }
-            TempData[WC.Error] = "Error while editing Application Type...";
+            TempData[WC.Error] = _localizer["ErrorEditHTTPPost"].ToString();
             return View(obj);
         }
 
@@ -104,12 +107,12 @@ namespace Store.Controllers
             var obj = _appTypeRepo.Find(id.GetValueOrDefault());
             if (obj == null)
             {
-                TempData[WC.Error] = "This Application Type wasn't found...";
+                TempData[WC.Error] = _localizer["NotFound"].ToString();
                 return NotFound();
             }
             _appTypeRepo.Remove(obj);
             _appTypeRepo.Save();
-            TempData[WC.Success] = "Application Type was deleted successfully";
+            TempData[WC.Success] = _localizer["SuccessDeleteHTTPPost"].ToString();
             return RedirectToAction("Index");
         }
     }

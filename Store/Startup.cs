@@ -17,6 +17,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 namespace Store
 {
@@ -32,6 +34,7 @@ namespace Store
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddDbContext<ApplicationDbContext>(options => 
             options.UseSqlServer(
                 Configuration.GetConnectionString("DefaultConnection")));
@@ -66,7 +69,8 @@ namespace Store
                 Options.AppSecret = "d16e373dca46592e43cbe7fb2ee4ac81";
             });
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddViewLocalization();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -82,6 +86,19 @@ namespace Store
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            var supportedCultures = new[]
+            {
+                new CultureInfo("en"),
+                new CultureInfo("uk")
+            };
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("uk"),
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures
+            });
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

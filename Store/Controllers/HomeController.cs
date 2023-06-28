@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Store_DataAccess;
 using Store_DataAccess.Repository.IRepository;
@@ -20,12 +21,15 @@ namespace Store.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IProductRepository _prodRepo;
         private readonly ICategoryRepository _catRepo;
+        private readonly IStringLocalizer<HomeController> _localizer;
 
-        public HomeController(ILogger<HomeController> logger, ICategoryRepository catRepo, IProductRepository prodRepo)
+        public HomeController(ILogger<HomeController> logger, ICategoryRepository catRepo,
+            IProductRepository prodRepo, IStringLocalizer<HomeController> localizer)
         {
             _logger = logger;
             _catRepo = catRepo;
             _prodRepo = prodRepo;
+            _localizer = localizer;
         }
 
         public IActionResult Index()
@@ -42,7 +46,7 @@ namespace Store.Controllers
         {
             List<ShoppingCart> shoppingCartList = new List<ShoppingCart>();
             if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WC.SessionCart) != null
-                && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WC.SessionCart).Count() > 0)
+                && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WC.SessionCart).Any())
             {
                 shoppingCartList = HttpContext.Session.Get<List<ShoppingCart>>(WC.SessionCart);
             }
@@ -71,13 +75,13 @@ namespace Store.Controllers
         {
             List<ShoppingCart> shoppingCartList = new List<ShoppingCart>();
             if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WC.SessionCart) != null
-                && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WC.SessionCart).Count() > 0)
+                && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WC.SessionCart).Any())
             {
                 shoppingCartList = HttpContext.Session.Get<List<ShoppingCart>>(WC.SessionCart);
             }
             shoppingCartList.Add(new ShoppingCart { ProductId = id, Amount = detailsVM.Product.TempAmount});
             HttpContext.Session.Set(WC.SessionCart, shoppingCartList);
-            TempData[WC.Success] = "Item was added to cart successfully";
+            TempData[WC.Success] = _localizer["AddedToCart"].ToString();
             return RedirectToAction(nameof(Index));
         }
 
@@ -85,7 +89,7 @@ namespace Store.Controllers
         {
             List<ShoppingCart> shoppingCartList = new List<ShoppingCart>();
             if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WC.SessionCart) != null
-                && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WC.SessionCart).Count() > 0)
+                && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WC.SessionCart).Any())
             {
                 shoppingCartList = HttpContext.Session.Get<List<ShoppingCart>>(WC.SessionCart);
             }
@@ -97,7 +101,7 @@ namespace Store.Controllers
             }
 
             HttpContext.Session.Set(WC.SessionCart, shoppingCartList);
-            TempData[WC.Success] = "Item was removed from cart successfully";
+            TempData[WC.Success] = _localizer["RemovedFromCart"].ToString();
             return RedirectToAction(nameof(Index));
         }
 
