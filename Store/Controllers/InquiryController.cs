@@ -8,6 +8,7 @@ using Store_Utility;
 using Store_DataAccess;
 using Store_DataAccess.Repository.IRepository;
 using Store_Models.ViewModels;
+using Microsoft.Extensions.Localization;
 
 namespace Store.Controllers
 {
@@ -16,14 +17,17 @@ namespace Store.Controllers
     {
         private readonly IInquiryHeaderRepository _inqHRepo;
         private readonly IInquiryDetailRepository _inqDRepo;
+        private readonly IStringLocalizer<InquiryController> _localizer;
 
         [BindProperty]
         public InquiryVM InquiryVM { get; set; }
 
-        public InquiryController(IInquiryDetailRepository inqDRepo, IInquiryHeaderRepository inqHRepo)
+        public InquiryController(IInquiryDetailRepository inqDRepo, IInquiryHeaderRepository inqHRepo, 
+            IStringLocalizer<InquiryController> localizer)
         {
             _inqDRepo = inqDRepo;
             _inqHRepo = inqHRepo;
+            _localizer = localizer;
         }
 
         public IActionResult Index()
@@ -71,7 +75,7 @@ namespace Store.Controllers
             _inqDRepo.RemoveRange(inquiryDetails);
             _inqHRepo.Remove(inquiryHeader);
             _inqHRepo.Save();
-            TempData[WC.Success] = "Action completed successfully";
+            TempData[WC.Success] = _localizer["Success"].ToString();
             return RedirectToAction(nameof(Index));
         }
 

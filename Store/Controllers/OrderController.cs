@@ -10,6 +10,7 @@ using Store_Models;
 using System;
 using Braintree;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Localization;
 
 namespace Store.Controllers
 {
@@ -19,15 +20,18 @@ namespace Store.Controllers
         private readonly IOrderHeaderRepository _orderHRepo;
         private readonly IOrderDetailRepository _orderDRepo;
         private readonly IBrainTreeGate _brain;
+        private readonly IStringLocalizer<OrderController> _localizer;
 
         [BindProperty]
         public OrderVM OrderVM { get; set; }
 
-        public OrderController(IOrderHeaderRepository orderHRepo, IOrderDetailRepository orderDRepo, IBrainTreeGate brain)
+        public OrderController(IOrderHeaderRepository orderHRepo, IOrderDetailRepository orderDRepo,
+            IBrainTreeGate brain, IStringLocalizer<OrderController> localizer)
         {
             _orderHRepo = orderHRepo;
             _orderDRepo = orderDRepo;
             _brain = brain;
+            _localizer = localizer;
         }
 
 
@@ -81,7 +85,7 @@ namespace Store.Controllers
             OrderHeader orderHeader = _orderHRepo.FirstOrDefault(u => u.Id == OrderVM.OrderHeader.Id);
             orderHeader.OrderStatus = WC.StatusInProcess;
             _orderHRepo.Save();
-            TempData[WC.Success] = "Order is In Process";
+            TempData[WC.Success] = _localizer["StartOrderProcessing"].ToString();
             return RedirectToAction(nameof(Index));
         }
 
@@ -92,7 +96,7 @@ namespace Store.Controllers
             orderHeader.OrderStatus = WC.StatusShipped;
             orderHeader.ShippingDate = DateTime.Now;
             _orderHRepo.Save();
-            TempData[WC.Success] = "Order Shipped Successfully";
+            TempData[WC.Success] = _localizer["SuccessfullShipment"].ToString();
             return RedirectToAction(nameof(Index));
         }
 
@@ -116,7 +120,7 @@ namespace Store.Controllers
             }
             orderHeader.OrderStatus = WC.StatusRefunded;
             _orderHRepo.Save();
-            TempData[WC.Success] = "Order Cancelled Successfully";
+            TempData[WC.Success] = _localizer["SuccessfullCancelling"].ToString();
             return RedirectToAction(nameof(Index));
         }
 
@@ -133,7 +137,7 @@ namespace Store.Controllers
             orderHeaderFromDb.Email = OrderVM.OrderHeader.Email;
 
             _orderHRepo.Save();
-            TempData[WC.Success] = "Order Details Updated Successfully";
+            TempData[WC.Success] = _localizer["DetailsUpdateSuccess"].ToString();
 
             return RedirectToAction("Details","Order",new { id=orderHeaderFromDb.Id});
         }

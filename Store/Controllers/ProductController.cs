@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Store_Utility;
 using Store_DataAccess.Repository.IRepository;
+using Microsoft.Extensions.Localization;
 
 namespace Store.Controllers
 {
@@ -21,21 +22,19 @@ namespace Store.Controllers
     {
         private readonly IProductRepository _prodRepo;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public ProductController(IProductRepository prodRepo, IWebHostEnvironment webHostEnvironment)
+        private readonly IStringLocalizer<ProductController> _localizer;
+
+        public ProductController(IProductRepository prodRepo, IWebHostEnvironment webHostEnvironment,
+            IStringLocalizer<ProductController> localizer)
         {
             _prodRepo = prodRepo;
             _webHostEnvironment = webHostEnvironment;
+            _localizer = localizer;
         }
 
         public IActionResult Index()
         {
             IEnumerable<Product> objList = _prodRepo.GetAll(includeProperties: "Category,ApplicationType");
-
-            //foreach(var obj in objList)
-            //{
-            //    obj.Category = _db.Category.FirstOrDefault(u => u.Id == obj.CategoryId);
-            //    obj.ApplicationType = _db.ApplicationType.FirstOrDefault(u => u.Id == obj.ApplicationTypeId);
-            //}
 
             return View(objList);
         }
@@ -43,17 +42,6 @@ namespace Store.Controllers
         //GET - UPSERT
         public IActionResult Upsert(int? id)
         {
-
-            //IEnumerable<SelectListItem> CategoryDropDown = _db.Category.Select(i => new SelectListItem
-            //{
-            //    Text = i.Name,
-            //    Value = i.Id.ToString()
-            //});
-
-            //ViewBag.CategoryDropDown = CategoryDropDown;
-            //ViewData["CategoryDropDown"] = CategoryDropDown;
-
-            //Product product = new Product();
 
             ProductVM productVM = new ProductVM()
             {
@@ -64,7 +52,6 @@ namespace Store.Controllers
 
             if (id == null)
             {
-                //Create new entity here
                 return View(productVM);
             }
             else
@@ -78,7 +65,7 @@ namespace Store.Controllers
             }
         }
 
-        //POST - UPSERT
+        //POST - UPDATE & INSERT
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Upsert(ProductVM productVM)
@@ -90,7 +77,6 @@ namespace Store.Controllers
 
                 if (productVM.Product.Id == 0)
                 {
-                    //Creating
                     string upload = webRootPath + WC.ImagePath;
                     string fileName = Guid.NewGuid().ToString();
                     string extension = Path.GetExtension(files[0].FileName);
@@ -103,7 +89,7 @@ namespace Store.Controllers
                     productVM.Product.Image = fileName + extension;
 
                     _prodRepo.Add(productVM.Product);
-                    TempData[WC.Success] = "Product was created successfully";
+                    TempData[WC.Success] = _localizer["SuccessfullCreation"].ToString();
                 }
                 else
                 {
@@ -135,7 +121,7 @@ namespace Store.Controllers
                         productVM.Product.Image = objFromDb.Image;
                     }
                     _prodRepo.Update(productVM.Product);
-                    TempData[WC.Success] = "Product was updated successfully";
+                    TempData[WC.Success] = _localizer["SuccessfullUpdating"].ToString();
                 }
 
                 _prodRepo.Save();
@@ -153,8 +139,7 @@ namespace Store.Controllers
             {
                 return NotFound();
             }
-            Product product = _prodRepo.FirstOrDefault(u => u.Id == id,includeProperties: "Category,ApplicationType");//Eager loading
-            //product.Category = _db.Category.Find(product.CategoryId);
+            Product product = _prodRepo.FirstOrDefault(u => u.Id == id,includeProperties: "Category,ApplicationType");
             if (product == null)
             {
                 return NotFound();
@@ -171,7 +156,7 @@ namespace Store.Controllers
             var obj = _prodRepo.Find(id.GetValueOrDefault());
             if (obj == null)
             {
-                TempData[WC.Error] = "Product with such ID wasn't found...";
+                TempData[WC.Error] = _localizer["NotFound"].ToString();
                 return NotFound();
             }
 
@@ -185,7 +170,7 @@ namespace Store.Controllers
 
             _prodRepo.Remove(obj);
             _prodRepo.Save();
-            TempData[WC.Success] = "Product was deleted successfully";
+            TempData[WC.Success] = _localizer["SuccessfullyDeleted"].ToString();
             return RedirectToAction("Index");
         }
     }
