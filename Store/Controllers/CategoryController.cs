@@ -7,6 +7,7 @@ using System.Data;
 using Store_Utility;
 using Store_DataAccess;
 using Store_DataAccess.Repository.IRepository;
+using Microsoft.Extensions.Localization;
 
 namespace Store.Controllers
 {
@@ -14,10 +15,12 @@ namespace Store.Controllers
     public class CategoryController : Controller
     {
         private readonly ICategoryRepository _catRepo;
+        private readonly IStringLocalizer<CategoryController> _localizer;
 
-        public CategoryController(ICategoryRepository catRepo)
+        public CategoryController(ICategoryRepository catRepo, IStringLocalizer<CategoryController> localizer)
         {
             _catRepo = catRepo;
+            _localizer = localizer;
         }
 
         public IActionResult Index()
@@ -41,10 +44,10 @@ namespace Store.Controllers
             {
                 _catRepo.Add(obj);
                 _catRepo.Save();
-                TempData[WC.Success] = "Category created successfully";
+                TempData[WC.Success] = _localizer["SuccessCreate"].ToString();
                 return RedirectToAction("Index");
             }
-            TempData[WC.Error] = "Error while creating category...";
+            TempData[WC.Error] = _localizer["ErrorCreate"].ToString();
             return View(obj);
         }
 
@@ -73,10 +76,10 @@ namespace Store.Controllers
             {
                 _catRepo.Update(obj);
                 _catRepo.Save();
-                TempData[WC.Success] = "Category was edited successfully";
+                TempData[WC.Success] = _localizer["SuccessEdit"].ToString();
                 return RedirectToAction("Index");
             }
-            TempData[WC.Error] = "Error while editing category...";
+            TempData[WC.Error] = _localizer["ErrorEdit"].ToString();
             return View(obj);
         }
 
@@ -104,12 +107,12 @@ namespace Store.Controllers
             var obj = _catRepo.Find(id.GetValueOrDefault());
             if (obj == null)
             {
-                TempData[WC.Error] = "This category wasn't found...";
+                TempData[WC.Error] = _localizer["NotFound"].ToString();
                 return NotFound();
             }
             _catRepo.Remove(obj);
             _catRepo.Save();
-            TempData[WC.Success] = "Category was deleted successfully";
+            TempData[WC.Success] = _localizer["SuccessDelete"].ToString();
             return RedirectToAction("Index");
         }
     }
