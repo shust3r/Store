@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using Store_DataAccess;
 using Store_DataAccess.Repository.IRepository;
 using Store_Models;
@@ -32,6 +33,7 @@ namespace Store.Controllers
         private readonly IOrderHeaderRepository _orderHRepo;
         private readonly IOrderDetailRepository _orderDRepo;
         private readonly IBrainTreeGate _brain;
+        private readonly IStringLocalizer<CartController> _localizer;
 
         [BindProperty]
         public ProductUserVM ProductUserVM { get; set; }
@@ -39,7 +41,8 @@ namespace Store.Controllers
         public CartController(IWebHostEnvironment webHostEnvironment, IEmailSender emailSender,
             IApplicationUserRepository userRepo, IProductRepository prodRepo, 
             IInquiryHeaderRepository inqHRepo, IInquiryDetailRepository inqDRepo,
-            IOrderHeaderRepository orderHRepo, IOrderDetailRepository orderDRepo, IBrainTreeGate brain)
+            IOrderHeaderRepository orderHRepo, IOrderDetailRepository orderDRepo, IBrainTreeGate brain,
+            IStringLocalizer<CartController> localizer)
         {
             _webHostEnvironment = webHostEnvironment;
             _emailSender = emailSender;
@@ -50,6 +53,7 @@ namespace Store.Controllers
             _orderHRepo = orderHRepo;
             _orderDRepo = orderDRepo;
             _brain = brain;
+            _localizer = localizer;
         }
         public IActionResult Index()
         {
@@ -167,12 +171,6 @@ namespace Store.Controllers
 
             if (User.IsInRole(WC.AdminRole))
             {
-                //Create order here
-                //var orderTotal = 0.0;
-                //foreach (Product prod in ProductUserVM.ProductList)
-                //{
-                //    orderTotal += prod.Price * prod.TempAmount;
-                //}
                 OrderHeader orderHeader = new OrderHeader()
                 {
                     CreatedByUserId = claim.Value,
@@ -255,7 +253,7 @@ namespace Store.Controllers
                 StringBuilder productListSB = new StringBuilder();
                 foreach (var prod in ProductUserVM.ProductList)
                 {
-                    productListSB.Append($" - Name: {prod.Name} <span style='font-size:14px;'>(ID: {prod.Id})</span><br />");
+                    productListSB.Append($" - {_localizer["ProdName"]}: {prod.Name} <span style='font-size:14px;'>({_localizer["ProdID"]}: {prod.Id})</span><br />");
                 }
 
                 string messageBody = string.Format(HtmlBody,
@@ -306,14 +304,14 @@ namespace Store.Controllers
         {
             List<ShoppingCart> shoppingCartList = new List<ShoppingCart>();
             if (HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WC.SessionCart) != null
-                && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WC.SessionCart).Count() > 0)
+                && HttpContext.Session.Get<IEnumerable<ShoppingCart>>(WC.SessionCart).Any())
             {
                 //Session exists
                 shoppingCartList = HttpContext.Session.Get<List<ShoppingCart>>(WC.SessionCart);
             }
 
             shoppingCartList.Remove(shoppingCartList.FirstOrDefault(u => u.ProductId == id));
-            TempData[WC.Success] = "Product was deleted from cart successfully";
+            TempData[WC.Success] = _localizer["SuccessRemove"].ToString();
             HttpContext.Session.Set(WC.SessionCart, shoppingCartList);
             return RedirectToAction(nameof(Index));
         }

@@ -117,22 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ErrorCreateHTTPPost" xml:space="preserve">
-    <value>Помилка при створенні Типу застосування...</value>
+  <data name="ProdID" xml:space="preserve">
+    <value>Код</value>
   </data>
-  <data name="ErrorDeleteHTTPPost" xml:space="preserve">
-    <value>Такий Тип застосування не знайдено...</value>
+  <data name="ProdName" xml:space="preserve">
+    <value>Назва</value>
   </data>
-  <data name="ErrorEditHTTPPost" xml:space="preserve">
-    <value>Помилка при редагуванні Типу застосування...</value>
-  </data>
-  <data name="SuccessCreateHTTPPost" xml:space="preserve">
-    <value>Тип застосування успішно додано</value>
-  </data>
-  <data name="SuccessDeleteHTTPPost" xml:space="preserve">
-    <value>Тип застосування успішно видалено</value>
-  </data>
-  <data name="SuccessEditHTTPPost" xml:space="preserve">
-    <value>Тип застосування успішно змінено</value>
+  <data name="SuccessRemove" xml:space="preserve">
+    <value>Товар успішно видалено з корзини</value>
   </data>
 </root>

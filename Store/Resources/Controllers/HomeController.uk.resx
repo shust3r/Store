@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AddedToCart" xml:space="preserve">
-    <value>Товар успішно добавлено в корзину</value>
+    <value>Товар успішно додано в корзину</value>
   </data>
   <data name="RemovedFromCart" xml:space="preserve">
     <value>Товар успішно видалено з корзини</value>
